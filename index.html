@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Billy Duong · IT Professional</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #f7f8fc;
+      --surface: #ffffff;
+      --card:    #eef1fb;
+      --border:  #dde3f5;
+      --accent:  #4f46e5;
+      --v2:      #8b5cf6;
+      --orange:  #f97316;
+      --green:   #10b981;
+      --red:     #ef4444;
+      --text:    #0f172a;
+      --muted:   #64748b;
+      --nav-h:   64px;
+      --r:       14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+      padding-bottom: 5rem;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+    /* ─── PROGRESS BAR ─── */
+    #pg {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--v2), var(--orange));
+      z-index: 500; transition: width .1s linear;
+      box-shadow: 0 0 8px rgba(79,70,229,.4);
+    }
+
+    /* ─── TOP NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: rgba(247,248,252,.92);
+      backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 6%;
+      z-index: 200;
+    }
+    .nav-logo { display: flex; align-items: center; gap: .55rem; text-decoration: none; }
+    .nav-logo-mark {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--v2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: #fff; letter-spacing: -.02em;
+    }
+    .nav-logo-name { font-weight: 700; font-size: .95rem; color: var(--text); }
+    .nav-logo-name span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: .855rem;
+      font-weight: 500; transition: color .18s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      padding: .42rem 1.1rem;
+      background: linear-gradient(135deg, var(--accent), var(--v2));
+      color: #fff; border-radius: 8px;
+      text-decoration: none; font-size: .84rem; font-weight: 600;
+      transition: opacity .18s, transform .18s;
+      box-shadow: 0 4px 14px rgba(79,70,229,.28);
+    }
+    .nav-cta:hover { opacity: .88; transform: translateY(-1px); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; display: block; }
+    .mob-menu {
+      display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+      background: rgba(247,248,252,.98); border-bottom: 1px solid var(--border);
+      flex-direction: column; padding: 1.25rem 6%; gap: .85rem; z-index: 199;
+      box-shadow: 0 12px 32px rgba(79,70,229,.08);
+    }
+    .mob-menu a { color: var(--muted); text-decoration: none; font-size: .95rem; font-weight: 500; padding: .35rem 0; border-bottom: 1px solid var(--border); }
+    .mob-menu a:last-child { border: none; color: var(--accent); font-weight: 600; }
+
+    /* ─── FLOATING BOTTOM NAV ─── */
+    .float-nav {
+      position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%);
+      z-index: 300;
+    }
+    .fn-wrap {
+      display: flex; align-items: center; gap: .3rem;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(24px) saturate(1.8);
+      border: 1px solid rgba(200,211,237,.7);
+      border-radius: 50px; padding: .42rem .55rem;
+      box-shadow: 0 10px 40px rgba(79,70,229,.15), 0 2px 8px rgba(0,0,0,.06);
+    }
+    .fn-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); text-decoration: none;
+      transition: all .2s; position: relative;
+      border: none; background: none; cursor: pointer;
+    }
+    .fn-btn svg { pointer-events: none; }
+    .fn-btn .fn-tip {
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: var(--text); color: #fff;
+      font-size: .68rem; font-weight: 600; white-space: nowrap;
+      padding: .22rem .55rem; border-radius: 5px;
+      opacity: 0; pointer-events: none; transition: opacity .15s;
+    }
+    .fn-btn:hover .fn-tip, .fn-btn:focus .fn-tip { opacity: 1; }
+    .fn-btn:hover { background: rgba(79,70,229,.08); color: var(--accent); }
+    .fn-btn.fn-active { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(79,70,229,.35); }
+    .fn-sep { width: 1px; height: 20px; background: var(--border); margin: 0 .1rem; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 3rem;
+      padding: calc(var(--nav-h) + 3rem) 8% 4rem;
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #eff2ff 0%, #ede9fe 55%, #e0e7ff 100%);
+    }
+    #hero-canvas { position: absolute; inset: 0; z-index: 0; opacity: .4; }
+    .hero-left { position: relative; z-index: 1; max-width: 620px; }
+    .hero-right { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1rem; align-self: center; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(79,70,229,.1); border: 1px solid rgba(79,70,229,.25);
+      color: var(--accent); padding: .28rem .85rem; border-radius: 20px;
+      font-size: .76rem; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 2px rgba(16,185,129,.3); animation: pulse 1.6s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.6; transform:scale(.85)} }
+
+    .hero-title {
+      font-size: clamp(2.6rem, 6vw, 4.4rem);
+      font-weight: 900; line-height: 1.06; letter-spacing: -.03em;
+      margin-bottom: .55rem; color: var(--text);
+    }
+    .hero-title .grad {
+      background: linear-gradient(120deg, var(--accent) 0%, var(--v2) 60%, var(--orange) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-role {
+      font-size: clamp(.95rem, 2.2vw, 1.2rem); color: var(--muted);
+      margin-bottom: .5rem; font-weight: 400; letter-spacing: .01em;
+    }
+    .hero-loc {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(255,255,255,.7); border: 1px solid var(--border);
+      padding: .25rem .75rem; border-radius: 20px;
+      color: var(--muted); font-size: .84rem; margin-bottom: 1.8rem;
+    }
+    .hero-desc {
+      color: var(--muted); max-width: 520px;
+      margin-bottom: 2.2rem; font-size: .93rem; line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: .85rem; flex-wrap: wrap; }
+
+    /* stat cards in hero right column */
+    .hero-stat-card {
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(200,211,237,.8);
+      border-radius: 16px; padding: 1.25rem 1.5rem;
+      min-width: 160px;
+      box-shadow: 0 4px 20px rgba(79,70,229,.08);
+      text-align: center;
+    }
+    .hero-stat-num {
+      font-size: 2.4rem; font-weight: 900; display: block; letter-spacing: -.04em;
+      background: linear-gradient(120deg, var(--accent), var(--v2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-stat-lbl { font-size: .77rem; color: var(--muted); font-weight: 500; margin-top: .15rem; }
+    .hero-stat-card.hs-green .hero-stat-num {
+      background: linear-gradient(120deg, var(--green), #34d399);
+      -webkit-background-clip: text; background-clip: text;
+    }
+    .hero-stat-card.hs-orange .hero-stat-num {
+      background: linear-gradient(120deg, var(--orange), #fbbf24);
+      -webkit-background-clip: text; background-clip: text;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .72rem 1.5rem; border-radius: 9px;
+      font-size: .92rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: all .2s; border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--v2));
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(79,70,229,.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(79,70,229,.38); opacity: .9; }
+    .btn-outline {
+      border: 1.5px solid var(--border); color: var(--text);
+      background: rgba(255,255,255,.8);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); background: #fff; }
+
+    /* ─── SECTION SHELL ─── */
+    section { padding: 5.5rem 6%; position: relative; }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .section-eyebrow {
+      display: flex; align-items: center; gap: .55rem;
+      font-size: .7rem; font-weight: 800; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: .65rem;
+    }
+    .section-eyebrow::before { content: ""; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+    .section-num {
+      position: absolute; top: 3rem; right: 6%;
+      font-size: clamp(4rem, 8vw, 7rem); font-weight: 900;
+      color: var(--accent); opacity: .05; line-height: 1;
+      pointer-events: none; user-select: none; letter-spacing: -.04em;
+    }
+    .section-title { font-size: clamp(1.7rem, 3.5vw, 2.3rem); font-weight: 800; letter-spacing: -.02em; margin-bottom: .7rem; }
+    .section-sub { color: var(--muted); max-width: 500px; margin-bottom: 2.75rem; font-size: .92rem; line-height: 1.7; }
+
+    .divider { height: 1px; background: var(--border); margin: 0 6%; }
+
+    /* ─── ABOUT — BENTO GRID ─── */
+    #about { background: var(--surface); }
+    .bento {
+      display: grid;
+      grid-template-columns: 240px 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1rem;
+    }
+    /* Profile card — tall */
+    .bento-profile {
+      grid-column: 1; grid-row: 1 / 3;
+      background: linear-gradient(160deg, #eef1fb 0%, #e8eeff 100%);
+      border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 1.75rem 1.5rem;
+      display: flex; flex-direction: column; align-items: center; gap: .9rem;
+      text-align: center;
+    }
+    .avatar-wrap {
+      width: 84px; height: 84px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--v2));
+      padding: 3px; flex-shrink: 0;
+    }
+    .avatar-inner {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center; font-size: 2.4rem;
+    }
+    .b-name { font-weight: 800; font-size: 1.05rem; }
+    .b-tag {
+      font-size: .75rem; color: var(--accent); font-weight: 700;
+      background: rgba(79,70,229,.1); border: 1px solid rgba(79,70,229,.2);
+      padding: .18rem .65rem; border-radius: 10px;
+    }
+    .b-info-list { width: 100%; display: flex; flex-direction: column; gap: .5rem; margin-top: .3rem; }
+    .b-info-row {
+      display: flex; align-items: center; gap: .55rem;
+      font-size: .8rem; color: var(--muted);
+      background: rgba(255,255,255,.7); border-radius: 8px;
+      padding: .45rem .65rem; border: 1px solid rgba(200,211,237,.6);
+      text-align: left;
+    }
+    .b-info-row svg { color: var(--accent); flex-shrink: 0; }
+    .b-info-row a { color: var(--muted); text-decoration: none; }
+    .b-info-row a:hover { color: var(--accent); }
+
+    /* Stat cards */
+    .bento-stat {
+      border: 1.5px solid var(--border); border-radius: 20px;
+      padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;
+      overflow: hidden; position: relative;
+    }
+    .bento-stat::before {
+      content: ""; position: absolute; top: -30%; right: -10%;
+      width: 120px; height: 120px; border-radius: 50%;
+      opacity: .12;
+    }
+    .bento-stat-1 { grid-column: 2; grid-row: 1; background: linear-gradient(135deg, #eef1ff 0%, #e5e8ff 100%); }
+    .bento-stat-1::before { background: var(--accent); }
+    .bento-stat-2 { grid-column: 3; grid-row: 1; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }
+    .bento-stat-2::before { background: var(--green); }
+    .bento-bio   { grid-column: 2 / 4; grid-row: 2; background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 1.75rem; }
+
+    .bs-num {
+      font-size: 3.2rem; font-weight: 900; letter-spacing: -.04em; line-height: 1;
+      display: block;
+    }
+    .bento-stat-1 .bs-num {
+      background: linear-gradient(120deg, var(--accent), var(--v2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .bento-stat-2 .bs-num {
+      background: linear-gradient(120deg, var(--green), #34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .bs-lbl { font-size: .78rem; color: var(--muted); font-weight: 600; margin-top: .4rem; }
+    .bs-sub { font-size: .72rem; color: var(--muted); opacity: .8; margin-top: .2rem; }
+
+    .bio-text p { color: var(--muted); font-size: .92rem; line-height: 1.75; }
+    .bio-text p + p { margin-top: .9rem; }
+    .bio-highlight {
+      display: inline; background: rgba(79,70,229,.1); color: var(--accent);
+      padding: .05rem .3rem; border-radius: 4px; font-weight: 600;
+    }
+
+    /* ─── SKILLS — TABS ─── */
+    #skills { background: var(--bg); }
+    .skill-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .skill-tab {
+      padding: .55rem 1.2rem; border-radius: 30px;
+      font-size: .84rem; font-weight: 600; cursor: pointer;
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--muted); transition: all .2s;
+    }
+    .skill-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .skill-tab.active {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+      box-shadow: 0 4px 14px rgba(79,70,229,.28);
+    }
+    .skill-panel { display: none; animation: fadeUp .3s ease; }
+    .skill-panel.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .skills-row { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .skill-pill {
+      display: flex; align-items: center; gap: .45rem;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 9px; padding: .55rem 1rem;
+      font-size: .84rem; font-weight: 500; color: var(--text);
+      transition: all .2s; cursor: default;
+      box-shadow: 0 1px 3px rgba(79,70,229,.05);
+    }
+    .skill-pill:hover {
+      border-color: var(--accent); color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(79,70,229,.14);
+      background: rgba(79,70,229,.03);
+    }
+    .skill-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ─── PROJECTS ─── */
+    #projects { background: var(--surface); }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.4rem; }
+    .proj-card {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 18px; overflow: hidden;
+      transition: all .25s; display: flex; flex-direction: column;
+      box-shadow: 0 2px 8px rgba(79,70,229,.05);
+    }
+    .proj-card:hover {
+      border-color: rgba(79,70,229,.4); transform: translateY(-5px);
+      box-shadow: 0 20px 48px rgba(79,70,229,.13);
+    }
+    .proj-visual { height: 190px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .proj-body { padding: 1.4rem; flex: 1; display: flex; flex-direction: column; }
+    .proj-cat { font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: .45rem; }
+    .proj-title { font-size: 1.1rem; font-weight: 800; margin-bottom: .55rem; letter-spacing: -.02em; }
+    .proj-desc { color: var(--muted); font-size: .87rem; flex: 1; margin-bottom: 1.1rem; line-height: 1.65; }
+    .proj-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1.1rem; }
+    .proj-tag {
+      font-size: .7rem; padding: .22rem .6rem;
+      background: rgba(79,70,229,.08); color: var(--accent);
+      border: 1px solid rgba(79,70,229,.18); border-radius: 5px; font-weight: 700;
+    }
+    .proj-pts { display: flex; flex-direction: column; gap: .38rem; }
+    .proj-pt {
+      display: flex; align-items: flex-start; gap: .45rem;
+      font-size: .81rem; color: var(--muted);
+    }
+    .proj-pt::before { content: "▸"; color: var(--accent); flex-shrink: 0; margin-top: 1px; font-size: .75rem; }
+
+    /* ─── EXPERIENCE ─── */
+    #experience { background: var(--bg); }
+    .exp-list { display: flex; flex-direction: column; gap: 0; }
+    .exp-card {
+      display: grid; grid-template-columns: 170px 1fr;
+      gap: 2rem; padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background .2s;
+    }
+    .exp-card:last-child { border-bottom: none; }
+    .exp-meta { padding-top: .2rem; }
+    .exp-dates { font-size: .8rem; color: var(--muted); font-weight: 500; }
+    .exp-badge {
+      display: inline-block; margin-top: .5rem;
+      font-size: .66rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
+      background: rgba(16,185,129,.1); color: var(--green);
+      border: 1px solid rgba(16,185,129,.28); border-radius: 5px; padding: .14rem .5rem;
+    }
+    .exp-company { font-weight: 800; font-size: 1.02rem; letter-spacing: -.01em; margin-bottom: .12rem; }
+    .exp-role { color: var(--accent); font-size: .87rem; font-weight: 700; margin-bottom: .8rem; }
+    .exp-blist { display: flex; flex-direction: column; gap: .4rem; }
+    .exp-b {
+      display: flex; align-items: flex-start; gap: .5rem;
+      font-size: .86rem; color: var(--muted); line-height: 1.55;
+    }
+    .exp-b::before { content: "▸"; color: var(--accent); flex-shrink: 0; margin-top: 1px; font-size: .75rem; }
+
+    /* ─── CONTACT — DARK PANEL ─── */
+    #contact {
+      background: linear-gradient(145deg, #1e1b4b 0%, #312e81 60%, #1e1b4b 100%);
+      color: #fff; padding: 6rem 6%;
+    }
+    #contact .section-eyebrow { color: #a5b4fc; }
+    #contact .section-eyebrow::before { background: #a5b4fc; }
+    #contact .section-title { color: #fff; }
+    #contact .section-sub { color: #a5b4fc; }
+    #contact .section-num { color: #fff; opacity: .04; }
+
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .contact-link {
+      display: flex; align-items: center; gap: .9rem;
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px; padding: .9rem 1.1rem;
+      text-decoration: none; color: #fff; transition: all .2s;
+      margin-bottom: .7rem;
+    }
+    .contact-link:last-child { margin-bottom: 0; }
+    .contact-link:hover {
+      background: rgba(255,255,255,.12); border-color: rgba(165,180,252,.5);
+      transform: translateX(4px);
+    }
+    .cl-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(165,180,252,.15);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: #a5b4fc;
+    }
+    .cl-lbl { font-size: .76rem; color: #a5b4fc; margin-bottom: .08rem; }
+    .cl-val { font-size: .9rem; font-weight: 600; }
+    .contact-box {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px; padding: 2.2rem;
+    }
+    .contact-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: .65rem; color: #fff; }
+    .contact-box p { color: #a5b4fc; font-size: .9rem; margin-bottom: 1.5rem; line-height: 1.7; }
+    .btn-white {
+      background: #fff; color: var(--accent);
+      box-shadow: 0 6px 20px rgba(0,0,0,.2);
+    }
+    .btn-white:hover { background: #f0f0ff; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.25); }
+    .btn-ghost {
+      border: 1.5px solid rgba(255,255,255,.25); color: #fff;
+      background: transparent;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,.6); background: rgba(255,255,255,.08); transform: translateY(-2px); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #0f0a2e;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 1.5rem 6%; text-align: center;
+      color: #a5b4fc; font-size: .8rem;
+    }
+    footer span { color: #c4b5fd; font-weight: 600; }
+
+    /* ─── REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .rd1 { transition-delay: .1s; } .rd2 { transition-delay: .2s; } .rd3 { transition-delay: .3s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; }
+      .hero-right { flex-direction: row; flex-wrap: wrap; }
+      .bento { grid-template-columns: 1fr 1fr; }
+      .bento-profile { grid-column: 1 / 3; grid-row: 1; flex-direction: row; text-align: left; }
+      .bento-stat-1 { grid-column: 1; grid-row: 2; }
+      .bento-stat-2 { grid-column: 2; grid-row: 2; }
+      .bento-bio    { grid-column: 1 / 3; grid-row: 3; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .bento { grid-template-columns: 1fr; }
+      .bento-profile { grid-column: 1; grid-row: 1; flex-direction: column; text-align: center; }
+      .bento-stat-1, .bento-stat-2, .bento-bio { grid-column: 1; grid-row: auto; }
+      .exp-card { grid-template-columns: 1fr; gap: .4rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+    }
+    @media (max-width: 500px) {
+      .float-nav .fn-sep:nth-child(n+4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="pg"></div>
+
+<!-- TOP NAV -->
+<nav id="topnav">
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-mark">BD</div>
+    <span class="nav-logo-name">Billy <span>Duong</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:duongbillyby2@gmail.com" class="nav-cta">Hire Me</a>
+  <button class="hamburger" aria-label="Menu" onclick="toggleMob()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <a href="#about"      onclick="toggleMob()">About</a>
+  <a href="#skills"     onclick="toggleMob()">Skills</a>
+  <a href="#projects"   onclick="toggleMob()">Projects</a>
+  <a href="#experience" onclick="toggleMob()">Experience</a>
+  <a href="#contact"    onclick="toggleMob()">Contact</a>
+  <a href="mailto:duongbillyby2@gmail.com" onclick="toggleMob()">✉ Hire Me</a>
+</div>
+
+<!-- FLOATING NAV -->
+<nav class="float-nav" aria-label="Section navigation">
+  <div class="fn-wrap">
+    <a href="#hero" class="fn-btn fn-active" data-sec="hero">
+      <span class="fn-tip">Home</span>
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    </a>
+    <div class="fn-sep"></div>
+    <a href="#about" class="fn-btn" data-sec="about">
+      <span class="fn-tip">About</span>
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+    <div class="fn-sep"></div>
+    <a href="#skills" class="fn-btn" data-sec="skills">
+      <span class="fn-tip">Skills</span>
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </a>
+    <div class="fn-sep"></div>
+    <a href="#projects" class="fn-btn" data-sec="projects">
+      <span class="fn-tip">Projects</span>
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </a>
+    <div class="fn-sep"></div>
+    <a href="#experience" class="fn-btn" data-sec="experience">
+      <span class="fn-tip">Experience</span>
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+    </a>
+    <div class="fn-sep"></div>
+    <a href="#contact" class="fn-btn" data-sec="contact">
+      <span class="fn-tip">Contact</span>
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-left">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Open to new opportunities
+    </div>
+    <h1 class="hero-title">
+      <span class="grad">Billy Duong</span><br/>
+      IT Professional
+    </h1>
+    <p class="hero-role">Infrastructure · Applications · Systems Support</p>
+    <div class="hero-loc">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      Los Angeles, CA
+    </div>
+    <p class="hero-desc">
+      IT professional with experience across enterprise hospitality and luxury retail — from
+      network infrastructure and endpoint management to application support and user-facing
+      systems that keep businesses running.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        View Projects
+      </a>
+      <a href="mailto:duongbillyby2@gmail.com" class="btn btn-outline">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Me
+      </a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-stat-card">
+      <span class="hero-stat-num" style="font-size:1.45rem; letter-spacing:-.02em;">Hospitality<br/>&amp; Luxury</span>
+      <div class="hero-stat-lbl" style="margin-top:.5rem;">Multi-Industry IT</div>
+    </div>
+    <div class="hero-stat-card hs-green">
+      <span class="hero-stat-num" style="font-size:1.2rem; letter-spacing:-.02em;">Infra · Apps<br/>· Endpoints</span>
+      <div class="hero-stat-lbl" style="margin-top:.5rem;">Full-Stack IT Support</div>
+    </div>
+    <div class="hero-stat-card hs-orange">
+      <span class="hero-stat-num">2+</span>
+      <div class="hero-stat-lbl">Years in IT</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="section-num">01</div>
+  <div class="container">
+    <p class="section-eyebrow">About Me</p>
+    <h2 class="section-title">Broad IT experience. Real-world results.</h2>
+    <p class="section-sub">From network infrastructure to application support — spanning enterprise hospitality and luxury retail environments.</p>
+
+    <div class="bento reveal">
+      <!-- Profile Card -->
+      <div class="bento-profile">
+        <div class="avatar-wrap"><div class="avatar-inner">👨‍💻</div></div>
+        <div>
+          <div class="b-name">Billy Duong</div>
+          <div class="b-tag" style="margin-top:.35rem; display:inline-block;">IT Professional · LA</div>
+          <div class="b-info-list" style="margin-top:.9rem;">
+            <div class="b-info-row">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <a href="mailto:duongbillyby2@gmail.com">duongbillyby2@gmail.com</a>
+            </div>
+            <div class="b-info-row">
+              <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM6.8 20.45H3.56V9H6.8v11.45z"/></svg>
+              <a href="https://www.linkedin.com/in/billy-duong03" target="_blank">billy-duong03</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat 1 -->
+      <div class="bento-stat bento-stat-1 reveal rd1">
+        <span class="bs-num" style="font-size:2rem; line-height:1.2;">Hospitality<br/>&amp; Luxury</span>
+        <div>
+          <div class="bs-lbl">Multi-Industry Background</div>
+          <div class="bs-sub">Enterprise restaurant chains · High-end retail</div>
+        </div>
+      </div>
+
+      <!-- Stat 2 -->
+      <div class="bento-stat bento-stat-2 reveal rd2">
+        <span class="bs-num" style="font-size:2rem; line-height:1.2;">Infra<br/>to Apps</span>
+        <div>
+          <div class="bs-lbl">Full-Stack IT Scope</div>
+          <div class="bs-sub">Networks · Endpoints · Application support</div>
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class="bento-bio reveal rd3">
+        <div class="bio-text">
+          <p>
+            I'm an IT professional based in <span class="bio-highlight">Los Angeles</span> with experience across both enterprise
+            infrastructure and application support. Currently working as an <span class="bio-highlight">IT Application &amp; Support Analyst
+            at Chrome Hearts</span>, I support business users and enterprise systems in a luxury retail environment.
+          </p>
+          <p>
+            My background spans <span class="bio-highlight">network administration</span> (Cisco Meraki, Ubiquiti), <span class="bio-highlight">endpoint
+            management</span> via Apple MDM and CrowdStrike Falcon, <span class="bio-highlight">application support</span>, and cross-platform
+            systems work across Windows and macOS. I've built IT infrastructure from the ground up across multiple industries.
+          </p>
+          <p>
+            Whether it's diagnosing a production issue, deploying a new network, or writing SOPs that actually get used —
+            I care about clean execution and systems that work without drama.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SKILLS ═══ -->
+<section id="skills">
+  <div class="section-num">02</div>
+  <div class="container">
+    <p class="section-eyebrow">Technical Skills</p>
+    <h2 class="section-title">Tools &amp; Technologies</h2>
+    <p class="section-sub">Tap a category to explore. Skills built across infrastructure, application support, and hands-on deployments.</p>
+
+    <div class="skill-tabs reveal">
+      <button class="skill-tab active" onclick="switchTab(this,'t-net')">🌐 Networking</button>
+      <button class="skill-tab"        onclick="switchTab(this,'t-sec')">🛡 Security &amp; Endpoints</button>
+      <button class="skill-tab"        onclick="switchTab(this,'t-sys')">💻 Systems</button>
+      <button class="skill-tab"        onclick="switchTab(this,'t-app')">📱 App Support</button>
+      <button class="skill-tab"        onclick="switchTab(this,'t-ops')">⚙️ IT Ops</button>
+    </div>
+
+    <div class="skill-panel active" id="t-net">
+      <div class="skills-row">
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>Cisco Meraki</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>Ubiquiti UniFi</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>Firewall Configuration</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>DNS / DHCP</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>Wi-Fi Management</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>Managed Switches</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>VLANs</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>Bandwidth Management</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#4f46e5"></span>Network Segmentation</div>
+      </div>
+    </div>
+
+    <div class="skill-panel" id="t-sec">
+      <div class="skills-row">
+        <div class="skill-pill"><span class="skill-dot" style="background:#10b981"></span>Apple MDM (Mosyle)</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#10b981"></span>CrowdStrike Falcon EDR</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#10b981"></span>Endpoint Security</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#10b981"></span>User Access Controls</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#10b981"></span>Software Patching</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#10b981"></span>Remote Device Management</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#10b981"></span>CCTV &amp; Alarm Systems</div>
+      </div>
+    </div>
+
+    <div class="skill-panel" id="t-sys">
+      <div class="skills-row">
+        <div class="skill-pill"><span class="skill-dot" style="background:#8b5cf6"></span>Windows Administration</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#8b5cf6"></span>macOS Administration</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#8b5cf6"></span>Google Workspace</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#8b5cf6"></span>Microsoft 365</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#8b5cf6"></span>Revel POS</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#8b5cf6"></span>iOS Administration</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#8b5cf6"></span>Home Lab / NAS</div>
+      </div>
+    </div>
+
+    <div class="skill-panel" id="t-app">
+      <div class="skills-row">
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Application Support</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>SaaS Platforms</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>User Onboarding / Offboarding</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Ticketing Systems</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Software Troubleshooting</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Access &amp; Permissions Management</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Enterprise System Administration</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Knowledge Base Documentation</div>
+      </div>
+    </div>
+
+    <div class="skill-panel" id="t-ops">
+      <div class="skills-row">
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Helpdesk &amp; Ticketing</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Asset Management</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Incident Response</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Structured Cabling</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Audio-Visual Installation</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>SOP Documentation</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Vendor Liaison</div>
+        <div class="skill-pill"><span class="skill-dot" style="background:#f97316"></span>Multi-Site Coordination</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ PROJECTS ═══ -->
+<section id="projects">
+  <div class="section-num">03</div>
+  <div class="container">
+    <p class="section-eyebrow">Work &amp; Personal Projects</p>
+    <h2 class="section-title">IT Projects</h2>
+    <p class="section-sub">Infrastructure builds and personal lab work — where I test, break, and figure things out outside of work hours.</p>
+
+    <div class="projects-grid">
+
+      <!-- PC BUILDS -->
+      <div class="proj-card reveal">
+        <div class="proj-visual" style="background:linear-gradient(135deg,#dbeafe 0%,#ede9fe 100%);">
+          <svg width="200" height="160" viewBox="0 0 200 160" fill="none">
+            <rect x="48" y="16" width="60" height="104" rx="5" fill="#0d1f35" stroke="#1e3a5f" stroke-width="1.5"/>
+            <rect x="53" y="22" width="50" height="72" rx="2" fill="#0a1628" stroke="#1e3a5f" stroke-width="1"/>
+            <rect x="48" y="28" width="3.5" height="52" rx="1.5" fill="url(#rgb2)"/>
+            <circle cx="78" cy="109" r="4.5" fill="#1e3a5f" stroke="#4f46e5" stroke-width="1.5"/>
+            <circle cx="78" cy="109" r="1.8" fill="#4f46e5" opacity=".9"/>
+            <rect x="56" y="48" width="44" height="20" rx="2" fill="#0d1f35" stroke="#4f46e5" stroke-width="1"/>
+            <rect x="59" y="51" width="32" height="4" rx="1" fill="#4f46e5" opacity=".55"/>
+            <rect x="59" y="57" width="32" height="4" rx="1" fill="#4f46e5" opacity=".35"/>
+            <circle cx="78" cy="76" r="10" fill="#0a1628" stroke="#4f46e5" stroke-width="1"/>
+            <circle cx="78" cy="76" r="3.5" fill="#4f46e5" opacity=".3"/>
+            <line x1="78" y1="66" x2="78" y2="86" stroke="#4f46e5" stroke-width=".8" opacity=".5"/>
+            <line x1="68" y1="76" x2="88" y2="76" stroke="#4f46e5" stroke-width=".8" opacity=".5"/>
+            <rect x="126" y="22" width="54" height="38" rx="3" fill="#0d1f35" stroke="#1e3a5f" stroke-width="1.5"/>
+            <rect x="129" y="25" width="48" height="32" rx="2" fill="#050d1a"/>
+            <rect x="132" y="28" width="42" height="4" rx="1" fill="#4f46e5" opacity=".3"/>
+            <rect x="132" y="35" width="28" height="2" rx="1" fill="#1e3a5f"/>
+            <rect x="132" y="40" width="36" height="2" rx="1" fill="#1e3a5f"/>
+            <rect x="132" y="45" width="22" height="2" rx="1" fill="#8b5cf6" opacity=".5"/>
+            <rect x="151" y="60" width="4" height="10" rx="1" fill="#1e3a5f"/>
+            <rect x="143" y="69" width="20" height="3" rx="1.5" fill="#1e3a5f"/>
+            <rect x="124" y="92" width="58" height="17" rx="2.5" fill="#0d1f35" stroke="#1e3a5f" stroke-width="1"/>
+            <rect x="128" y="96" width="7" height="4" rx="1" fill="#1e3a5f"/>
+            <rect x="138" y="96" width="7" height="4" rx="1" fill="#1e3a5f"/>
+            <rect x="148" y="96" width="7" height="4" rx="1" fill="#1e3a5f"/>
+            <rect x="158" y="96" width="7" height="4" rx="1" fill="#4f46e5" opacity=".4"/>
+            <rect x="128" y="103" width="40" height="3" rx="1" fill="#1e3a5f"/>
+            <circle cx="78" cy="76" r="26" fill="url(#gpc)" opacity=".2"/>
+            <defs>
+              <linearGradient id="rgb2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ff0080"/><stop offset="33%" stop-color="#4f46e5"/>
+                <stop offset="66%" stop-color="#10b981"/><stop offset="100%" stop-color="#ff0080"/>
+              </linearGradient>
+              <radialGradient id="gpc" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="proj-body">
+          <div class="proj-cat">Personal Build</div>
+          <div class="proj-title">Custom PC Builds</div>
+          <p class="proj-desc">Full desktop builds from component selection to OS — workstations and gaming rigs, tuned for each use case.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Hardware Assembly</span><span class="proj-tag">BIOS / XMP</span>
+            <span class="proj-tag">Windows OS</span><span class="proj-tag">Driver Config</span>
+          </div>
+          <div class="proj-pts">
+            <div class="proj-pt">Sourced and matched components for performance and budget targets</div>
+            <div class="proj-pt">Configured BIOS with XMP/EXPO for optimal RAM speeds</div>
+            <div class="proj-pt">Full OS install, activation, and driver rollout per build</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOME NETWORK -->
+      <div class="proj-card reveal rd1">
+        <div class="proj-visual" style="background:linear-gradient(135deg,#d1fae5 0%,#ecfdf5 100%);">
+          <svg width="200" height="160" viewBox="0 0 200 160" fill="none">
+            <rect x="14" y="14" width="60" height="124" rx="4" fill="#0a1f10" stroke="#1a3d20" stroke-width="1.5"/>
+            <rect x="19" y="20" width="50" height="16" rx="2" fill="#0d2614" stroke="#10b981" stroke-width="1"/>
+            <rect x="22" y="24" width="3.5" height="8" rx="1" fill="#10b981" opacity=".7"/>
+            <circle cx="61" cy="28" r="2.5" fill="#10b981" opacity=".8"/>
+            <rect x="19" y="40" width="50" height="16" rx="2" fill="#0d2614" stroke="#10b981" stroke-width="1"/>
+            <rect x="22" y="44" width="3.5" height="8" rx="1" fill="#10b981" opacity=".5"/>
+            <circle cx="61" cy="48" r="2.5" fill="#f97316" opacity=".7"/>
+            <rect x="19" y="60" width="50" height="16" rx="2" fill="#0d2614" stroke="#10b981" stroke-width="1"/>
+            <rect x="22" y="64" width="3.5" height="8" rx="1" fill="#10b981" opacity=".9"/>
+            <circle cx="61" cy="68" r="2.5" fill="#10b981"/>
+            <rect x="19" y="80" width="50" height="10" rx="2" fill="#081a10" stroke="#10b981" stroke-width=".8" opacity=".8"/>
+            <circle cx="30" cy="85" r="1.5" fill="#10b981"/><circle cx="36" cy="85" r="1.5" fill="#10b981" opacity=".6"/>
+            <circle cx="42" cy="85" r="1.5" fill="#f97316" opacity=".8"/><circle cx="48" cy="85" r="1.5" fill="#10b981"/>
+            <circle cx="61" cy="85" r="2.5" fill="#4f46e5" opacity=".7"/>
+            <rect x="100" y="58" width="44" height="30" rx="5" fill="#0a1f10" stroke="#10b981" stroke-width="1.5"/>
+            <path d="M122 58 Q122 51 122 51" stroke="#10b981" stroke-width="1.2" stroke-linecap="round" opacity=".4"/>
+            <path d="M116 58 Q116 45 122 42 Q128 45 128 58" stroke="#10b981" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".65"/>
+            <path d="M110 58 Q110 39 122 34 Q134 39 134 58" stroke="#10b981" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".85"/>
+            <line x1="74" y1="50" x2="100" y2="65" stroke="#10b981" stroke-width="1" stroke-dasharray="3,2.5" opacity=".55"/>
+            <rect x="141" y="100" width="34" height="22" rx="3" fill="#0a1f10" stroke="#1a3d20" stroke-width="1"/>
+            <rect x="144" y="103" width="28" height="15" rx="1.5" fill="#050d0a"/>
+            <rect x="141" y="121" width="34" height="3" rx="1.5" fill="#1a3d20"/>
+            <rect x="108" y="102" width="16" height="22" rx="3" fill="#0a1f10" stroke="#1a3d20" stroke-width="1"/>
+            <rect x="110" y="105" width="12" height="15" rx="1" fill="#050d0a"/>
+            <rect x="141" y="134" width="34" height="15" rx="2.5" fill="#0a1f10" stroke="#10b981" stroke-width=".8" opacity=".7"/>
+            <circle cx="148" cy="141" r="2" fill="#10b981" opacity=".7"/><circle cx="155" cy="141" r="2" fill="#10b981" opacity=".4"/>
+            <line x1="122" y1="88" x2="116" y2="102" stroke="#10b981" stroke-width=".8" stroke-dasharray="3,2" opacity=".5"/>
+            <line x1="134" y1="74" x2="158" y2="100" stroke="#10b981" stroke-width=".8" stroke-dasharray="3,2" opacity=".5"/>
+            <circle cx="122" cy="73" r="32" fill="url(#gnet)" opacity=".1"/>
+            <defs>
+              <radialGradient id="gnet" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="proj-body">
+          <div class="proj-cat">Home Lab</div>
+          <div class="proj-title">Home Network &amp; Server</div>
+          <p class="proj-desc">Enterprise-grade home network with VLAN segmentation, local DNS, NAS storage, and access control policies.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">VLANs</span><span class="proj-tag">Firewall Rules</span>
+            <span class="proj-tag">DNS / DHCP</span><span class="proj-tag">NAS</span>
+          </div>
+          <div class="proj-pts">
+            <div class="proj-pt">Separate VLANs for IoT, trusted devices, and guests</div>
+            <div class="proj-pt">Local DNS and DHCP for fast internal name resolution</div>
+            <div class="proj-pt">NAS with automated backups and media storage</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MULTI-SITE -->
+      <div class="proj-card reveal rd2">
+        <div class="proj-visual" style="background:linear-gradient(135deg,#f3e8ff 0%,#ede9fe 100%);">
+          <svg width="200" height="160" viewBox="0 0 200 160" fill="none">
+            <rect x="76" y="60" width="40" height="30" rx="4" fill="#1a1028" stroke="#8b5cf6" stroke-width="1.5"/>
+            <text x="96" y="79" font-size="6" fill="#8b5cf6" text-anchor="middle" font-family="monospace" font-weight="bold">HQ</text>
+            <circle cx="112" cy="65" r="2.5" fill="#10b981"/>
+            <rect x="16" y="16" width="32" height="24" rx="3.5" fill="#1a1028" stroke="#8b5cf6" stroke-width="1" opacity=".85"/>
+            <text x="32" y="32" font-size="5" fill="#8b5cf6" text-anchor="middle" font-family="monospace">#01</text>
+            <circle cx="42" cy="20" r="1.8" fill="#4f46e5" opacity=".8"/>
+            <rect x="152" y="16" width="32" height="24" rx="3.5" fill="#1a1028" stroke="#8b5cf6" stroke-width="1" opacity=".85"/>
+            <text x="168" y="32" font-size="5" fill="#8b5cf6" text-anchor="middle" font-family="monospace">#02</text>
+            <circle cx="178" cy="20" r="1.8" fill="#4f46e5" opacity=".8"/>
+            <rect x="6" y="66" width="32" height="24" rx="3.5" fill="#1a1028" stroke="#8b5cf6" stroke-width="1" opacity=".85"/>
+            <text x="22" y="82" font-size="5" fill="#8b5cf6" text-anchor="middle" font-family="monospace">#03</text>
+            <circle cx="30" cy="70" r="1.8" fill="#f97316" opacity=".8"/>
+            <rect x="162" y="66" width="32" height="24" rx="3.5" fill="#1a1028" stroke="#8b5cf6" stroke-width="1" opacity=".85"/>
+            <text x="178" y="82" font-size="5" fill="#8b5cf6" text-anchor="middle" font-family="monospace">#04</text>
+            <circle cx="188" cy="70" r="1.8" fill="#10b981" opacity=".8"/>
+            <rect x="16" y="116" width="32" height="24" rx="3.5" fill="#1a1028" stroke="#8b5cf6" stroke-width="1" opacity=".85"/>
+            <text x="32" y="132" font-size="5" fill="#8b5cf6" text-anchor="middle" font-family="monospace">#05</text>
+            <circle cx="42" cy="120" r="1.8" fill="#10b981" opacity=".8"/>
+            <rect x="152" y="116" width="32" height="24" rx="3.5" fill="#1a1028" stroke="#8b5cf6" stroke-width="1" opacity=".85"/>
+            <text x="168" y="132" font-size="5" fill="#8b5cf6" text-anchor="middle" font-family="monospace">#06</text>
+            <circle cx="178" cy="120" r="1.8" fill="#4f46e5" opacity=".8"/>
+            <text x="100" y="150" font-size="6.5" fill="#8b5cf6" text-anchor="middle" font-family="monospace" opacity=".65">+ 44 more locations</text>
+            <line x1="48" y1="28" x2="76" y2="68" stroke="#8b5cf6" stroke-width=".85" stroke-dasharray="4,3" opacity=".45"/>
+            <line x1="152" y1="28" x2="116" y2="68" stroke="#8b5cf6" stroke-width=".85" stroke-dasharray="4,3" opacity=".45"/>
+            <line x1="38" y1="90" x2="76" y2="75" stroke="#8b5cf6" stroke-width=".85" stroke-dasharray="4,3" opacity=".45"/>
+            <line x1="162" y1="75" x2="116" y2="75" stroke="#8b5cf6" stroke-width=".85" stroke-dasharray="4,3" opacity=".45"/>
+            <line x1="48" y1="128" x2="76" y2="86" stroke="#8b5cf6" stroke-width=".85" stroke-dasharray="4,3" opacity=".45"/>
+            <line x1="152" y1="128" x2="116" y2="86" stroke="#8b5cf6" stroke-width=".85" stroke-dasharray="4,3" opacity=".45"/>
+            <circle cx="96" cy="75" r="44" fill="url(#gpur)" opacity=".08"/>
+            <defs>
+              <radialGradient id="gpur" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="proj-body">
+          <div class="proj-cat">Enterprise IT</div>
+          <div class="proj-title">Multi-Site IT Rollouts</div>
+          <p class="proj-desc">End-to-end IT deployment for new restaurant openings — cabling, networking, POS, cameras, and AV, all from scratch.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Structured Cabling</span><span class="proj-tag">Revel POS</span>
+            <span class="proj-tag">CCTV</span><span class="proj-tag">Cisco / Ubiquiti</span>
+          </div>
+          <div class="proj-pts">
+            <div class="proj-pt">Coordinated switch configs, Wi-Fi, and cabling at each site</div>
+            <div class="proj-pt">Installed POS terminals, printers, and back-office hardware</div>
+            <div class="proj-pt">Set up CCTV, alarms, and AV systems as part of build-out</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <div class="section-num">04</div>
+  <div class="container">
+    <p class="section-eyebrow">Work History</p>
+    <h2 class="section-title">Experience</h2>
+    <p class="section-sub">Where the real work happened.</p>
+
+    <div class="exp-list">
+
+      <!-- Chrome Hearts — Current -->
+      <div class="exp-card reveal">
+        <div class="exp-meta">
+          <div class="exp-dates">May 2026 – Present</div>
+          <div class="exp-badge">● Current</div>
+        </div>
+        <div>
+          <div class="exp-company">Chrome Hearts — Los Angeles, CA</div>
+          <div class="exp-role">IT Application &amp; Support Analyst</div>
+        </div>
+      </div>
+
+      <!-- Gen Korean BBQ -->
+      <div class="exp-card reveal rd1">
+        <div class="exp-meta">
+          <div class="exp-dates">Aug 2023 – May 2026</div>
+        </div>
+        <div>
+          <div class="exp-company">Gen Korean BBQ — Cerritos, CA</div>
+          <div class="exp-role">IT Assistant</div>
+          <div class="exp-blist">
+            <div class="exp-b">Managed day-to-day IT operations across 50+ restaurant locations — POS, networking, and security infrastructure.</div>
+            <div class="exp-b">Configured and maintained Cisco Meraki and Ubiquiti infrastructure: firewalls, switches, and segmented Wi-Fi.</div>
+            <div class="exp-b">Deployed Apple MDM (Mosyle) for iOS endpoint provisioning, remote management, and compliance.</div>
+            <div class="exp-b">Participated in CrowdStrike Falcon EDR rollout — agent installation, policy configuration, and monitoring.</div>
+            <div class="exp-b">Led end-to-end IT setup for new store openings: cabling, POS, security cameras, alarms, and AV.</div>
+            <div class="exp-b">Authored SOPs and training documentation; primary vendor liaison for escalated support and upgrades.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- R&B Tea -->
+      <div class="exp-card reveal rd2">
+        <div class="exp-meta">
+          <div class="exp-dates">Oct 2021 – Aug 2023</div>
+        </div>
+        <div>
+          <div class="exp-company">R&amp;B Tea — Pasadena, CA</div>
+          <div class="exp-role">Lead Barista / Cashier · IT Troubleshooter</div>
+          <div class="exp-blist">
+            <div class="exp-b">Store's go-to for POS and connected device issues — resolved problems other staff escalated.</div>
+            <div class="exp-b">Mentored team on operational tools and SOPs for tech and service consistency.</div>
+            <div class="exp-b">Led daily operations during peak hours, keeping workflows running under pressure.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT — DARK ═══ -->
+<section id="contact">
+  <div class="section-num">05</div>
+  <div class="container">
+    <div class="contact-grid">
+      <div class="reveal">
+        <p class="section-eyebrow">Get In Touch</p>
+        <h2 class="section-title">Let's connect.</h2>
+        <p class="section-sub" style="margin-bottom:2rem;">Open to IT opportunities across infrastructure, application support, and systems — or just a good conversation with other IT folks.</p>
+
+        <a href="mailto:duongbillyby2@gmail.com" class="contact-link">
+          <div class="cl-icon">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <div class="cl-lbl">Email</div>
+            <div class="cl-val">duongbillyby2@gmail.com</div>
+          </div>
+        </a>
+
+        <a href="https://www.linkedin.com/in/billy-duong03" target="_blank" class="contact-link">
+          <div class="cl-icon">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM6.8 20.45H3.56V9H6.8v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0z"/></svg>
+          </div>
+          <div>
+            <div class="cl-lbl">LinkedIn</div>
+            <div class="cl-val">linkedin.com/in/billy-duong03</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="contact-box reveal rd1">
+        <h3>Ready when you are.</h3>
+        <p>Currently working in IT at Chrome Hearts. Open to connecting, collaborating, or exploring new roles in IT infrastructure or application support. Los Angeles based — on-site or hybrid works great.</p>
+        <a href="mailto:duongbillyby2@gmail.com" class="btn btn-white" style="width:100%; justify-content:center; margin-bottom:.75rem;">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Send Me an Email
+        </a>
+        <a href="https://www.linkedin.com/in/billy-duong03" target="_blank" class="btn btn-ghost" style="width:100%; justify-content:center;">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM6.8 20.45H3.56V9H6.8v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0z"/></svg>
+          Connect on LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Designed &amp; built by <span>Billy Duong</span> · Los Angeles, CA · 2026</p>
+</footer>
+
+<script>
+/* ── PROGRESS BAR ── */
+const pg = document.getElementById('pg');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  pg.style.width = Math.min(pct, 100) + '%';
+}, { passive: true });
+
+/* ── PARTICLE CANVAS ── */
+const canvas = document.getElementById('hero-canvas');
+const ctx    = canvas.getContext('2d');
+let nodes    = [];
+const COUNT  = 50;
+function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+function init() {
+  resize();
+  nodes = Array.from({ length: COUNT }, () => ({
+    x: Math.random() * canvas.width,  y: Math.random() * canvas.height,
+    vx: (Math.random() - .5) * .38,   vy: (Math.random() - .5) * .38,
+    r:  Math.random() * 1.8 + .8,
+  }));
+}
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  nodes.forEach(n => {
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > canvas.width)  n.vx *= -1;
+    if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+  });
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+      const d  = Math.hypot(dx, dy);
+      if (d < 140) {
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.strokeStyle = `rgba(79,70,229,${.18 * (1 - d/140)})`;
+        ctx.lineWidth = .7; ctx.stroke();
+      }
+    }
+  }
+  nodes.forEach(n => {
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(79,70,229,.4)'; ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+init(); draw(); window.addEventListener('resize', init);
+
+/* ── SCROLL REVEAL ── */
+const ro = new IntersectionObserver(entries =>
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+  { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+/* ── MOBILE MENU ── */
+function toggleMob() {
+  const m = document.getElementById('mobMenu');
+  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+}
+
+/* ── SECTION TRACKING (top nav + float nav) ── */
+const sections = [...document.querySelectorAll('section[id]')];
+const topLinks = document.querySelectorAll('.nav-links a');
+const fnBtns   = document.querySelectorAll('.fn-btn[data-sec]');
+
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 90) cur = s.id; });
+  topLinks.forEach(a => a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--accent)' : '');
+  fnBtns.forEach(b => {
+    b.classList.toggle('fn-active', b.dataset.sec === cur);
+  });
+}, { passive: true });
+
+/* ── SKILL TABS ── */
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.skill-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.skill-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+/* ── KEYBOARD NAVIGATION ── */
+const sectionIds = ['hero','about','skills','projects','experience','contact'];
+let curIdx = 0;
+
+function navTo(idx) {
+  idx = Math.max(0, Math.min(sectionIds.length - 1, idx));
+  curIdx = idx;
+  document.getElementById(sectionIds[idx]).scrollIntoView({ behavior: 'smooth' });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); navTo(curIdx + 1); }
+  if (e.key === 'ArrowUp'   || e.key === 'PageUp')   { e.preventDefault(); navTo(curIdx - 1); }
+  if (e.key === 'Home') { e.preventDefault(); navTo(0); }
+  if (e.key === 'End')  { e.preventDefault(); navTo(sectionIds.length - 1); }
+  const n = parseInt(e.key);
+  if (n >= 1 && n <= sectionIds.length) { e.preventDefault(); navTo(n - 1); }
+});
+
+/* Sync curIdx on scroll */
+window.addEventListener('scroll', () => {
+  sections.forEach((s, i) => { if (window.scrollY >= s.offsetTop - 120) curIdx = i; });
+}, { passive: true });
+
+/* ── TOUCH SWIPE GESTURE ── */
+let touchY0 = 0, touchX0 = 0;
+document.addEventListener('touchstart', e => {
+  touchY0 = e.touches[0].clientY;
+  touchX0 = e.touches[0].clientX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  const dy = touchY0 - e.changedTouches[0].clientY;
+  const dx = Math.abs(touchX0 - e.changedTouches[0].clientX);
+  /* Only trigger if predominantly vertical and large enough swipe */
+  if (Math.abs(dy) < 80 || dx > Math.abs(dy) * .7) return;
+  const atTop    = window.scrollY < 40;
+  const atBottom = (window.scrollY + window.innerHeight) > (document.body.scrollHeight - 40);
+  if (dy > 0 && atBottom) navTo(curIdx + 1);
+  if (dy < 0 && atTop)    navTo(curIdx - 1);
+}, { passive: true });
+</script>
+</body>
+</html>
